@@ -21,6 +21,9 @@ namespace MovieLibrary.Controllers
     public class MovieController
     {
         static HttpClient client = new HttpClient();
+        static string toplistEndpoint = "https://ithstenta2020.s3.eu-north-1.amazonaws.com/topp100.json";
+        static string detailedEndpoint = "https://ithstenta2020.s3.eu-north-1.amazonaws.com/detailedMovies.json";
+
         ResponseFactory<Response> okResponseFactory = new OkResponseFactory();
         ResponseFactory<Response> errorResponseFactory = new ErrorResponseFactory();
 
@@ -28,11 +31,9 @@ namespace MovieLibrary.Controllers
         [Route("/toplist")]
         public ResponseObject<IEnumerable<string>> Toplist(bool asc = false)
         {
-            var movies = FetchToplist(client);
+            var movies = FetchMovies(client, toplistEndpoint);
 
-            var response = (movies is null)
-                ? errorResponseFactory.GetResponse("BadRequest")
-                : okResponseFactory.GetResponse("Ok");
+            var response = GetResponse(movies);
 
             IEnumerable<Movie> orderedMovies = (asc) 
                 ? movies.OrderBy(m => m.rated) 
@@ -46,7 +47,7 @@ namespace MovieLibrary.Controllers
         [HttpGet]
         [Route("/movie")]
         public ResponseObject<Movie> GetMovieById(string id) {
-            var movies = FetchToplist(client);
+            var movies = FetchMovies(client, toplistEndpoint);
             var movie = movies.FirstOrDefault(m => m.id == id);
 
             var response = (movie is null)
@@ -60,8 +61,8 @@ namespace MovieLibrary.Controllers
         [Route("/movies")]
         public ResponseObject<IEnumerable<Movie>> GetAll()
         {
-            var toplistMovies = FetchToplist(client);
-            var detailedMovies = FetchDetailed(client);
+            var toplistMovies = FetchMovies(client, toplistEndpoint);
+            var detailedMovies = FetchMovies(client, detailedEndpoint);
 
             var response = (toplistMovies is null || detailedMovies is null)
                 ? errorResponseFactory.GetResponse("BadRequest")
@@ -73,18 +74,18 @@ namespace MovieLibrary.Controllers
             return new ResponseObject<IEnumerable<Movie>>() { Response = response, Content = uniqueMovies };
         }
 
-        private static IEnumerable<Movie> FetchToplist(HttpClient client)
+        private static IEnumerable<Movie> FetchMovies(HttpClient client, string endpoint)
         {
-            var result = client.GetAsync("https://ithstenta2020.s3.eu-north-1.amazonaws.com/topp100.json").Result;
+            var result = client.GetAsync(endpoint).Result;
             var movies = JsonSerializer.Deserialize<List<Movie>>(new StreamReader(result.Content.ReadAsStream()).ReadToEnd());
             return movies;
         }
 
-        private static IEnumerable<Movie> FetchDetailed(HttpClient client)
+        private Response GetResponse(IEnumerable<Movie> movies)
         {
-            var result = client.GetAsync("https://ithstenta2020.s3.eu-north-1.amazonaws.com/detailedMovies.json").Result;
-            var movies = JsonSerializer.Deserialize<List<Movie>>(new StreamReader(result.Content.ReadAsStream()).ReadToEnd());
-            return movies;
+            return (movies is null)
+                ? errorResponseFactory.GetResponse("BadRequest")
+                : okResponseFactory.GetResponse("Ok");
         }
     }
 }
