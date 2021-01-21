@@ -7,6 +7,8 @@ using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using MovieLibrary.Factory;
+using MovieLibrary.Responses;
 
 namespace MovieLibrary.Controllers
 {
@@ -22,6 +24,8 @@ namespace MovieLibrary.Controllers
     public class MovieController
     {
         static HttpClient client = new HttpClient();
+        ResponseFactory<Response> okResponseFactory = new OkResponseFactory();
+        ResponseFactory<Response> errorResponseFactory = new ErrorResponseFactory();
 
         [HttpGet]
         [Route("/toplist")]
@@ -34,6 +38,8 @@ namespace MovieLibrary.Controllers
                 : movies.OrderByDescending(m => m.rated);
 
             var titles = orderedMovies.Select(m => m.title).ToList();
+
+            var response = okResponseFactory.GetResponse("Ok");
             return titles;
         }
 

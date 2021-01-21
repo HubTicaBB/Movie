@@ -8,11 +8,10 @@ namespace MovieLibrary.Responses
 {
     public class NotFound : Response
     {
-        public NotFound(IEnumerable<Movie> movies)
+        public NotFound()
         {
             StatusCode = 404;
             Message = "Not Found";
-            Movies = movies;
         }
     }
 }

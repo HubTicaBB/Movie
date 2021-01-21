@@ -6,9 +6,9 @@ namespace MovieLibrary.Factory
 {
     public class OkResponseFactory : ResponseFactory<Response>
     {
-        protected override Response CreateResponse(string name, IEnumerable<Movie> movies) => name switch
+        protected override Response CreateResponse(string name) => name switch
         {
-            nameof(Ok) => new Ok(movies),
+            nameof(Ok) => new Ok(),
             _ => null
         };
     }

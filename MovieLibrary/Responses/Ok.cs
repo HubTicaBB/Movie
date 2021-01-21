@@ -8,11 +8,10 @@ namespace MovieLibrary.Responses
 {
     public class Ok : Response
     {
-        public Ok(IEnumerable<Movie> movies)
+        public Ok()
         {
             StatusCode = 200;
             Message = "Ok";
-            Movies = movies;
         }
     }
 }

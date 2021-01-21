@@ -8,11 +8,10 @@ namespace MovieLibrary.Responses
 {
     public class BadRequest : Response
     {
-        public BadRequest(IEnumerable<Movie> movies)
+        public BadRequest()
         {
             StatusCode = 500;
             Message = "Bad Request";
-            Movies = movies;
         }
     }
 }
