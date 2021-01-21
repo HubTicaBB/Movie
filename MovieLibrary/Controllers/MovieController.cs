@@ -45,16 +45,20 @@ namespace MovieLibrary.Controllers
 
         [HttpGet]
         [Route("/movie")]
-        public Movie GetMovieById(string id) {
+        public ResponseObject<Movie> GetMovieById(string id) {
             var movies = FetchToplist(client);
             var movie = movies.FirstOrDefault(m => m.id == id);
 
-            return movie;
+            var response = (movie is null)
+                ? errorResponseFactory.GetResponse("NotFound")
+                : okResponseFactory.GetResponse("Ok");
+
+            return new ResponseObject<Movie>() { Response = response, Content = movie };
         }
 
         [HttpGet]
         [Route("/movies")]
-        public IEnumerable<Movie> GetAll()
+        public ResponseObject<IEnumerable<Movie>> GetAll()
         {
             var toplistMovies = FetchToplist(client);
             var detailedMovies = FetchDetailed(client);
@@ -62,7 +66,8 @@ namespace MovieLibrary.Controllers
             var movies = toplistMovies.Concat(detailedMovies);
             var uniqueMovies = movies.GroupBy(m => m.title).Select(m => m.FirstOrDefault()).ToList();
 
-            return uniqueMovies;
+            var response = okResponseFactory.GetResponse("Ok");
+            return new ResponseObject<IEnumerable<Movie>>() { Response = response, Content = uniqueMovies };
         }
 
         private static IEnumerable<Movie> FetchToplist(HttpClient client)
