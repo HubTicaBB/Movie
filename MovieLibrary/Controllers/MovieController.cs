@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
-using Microsoft.AspNetCore.Mvc;
-
+using System.Threading.Tasks;
 
 namespace MovieLibrary.Controllers
 {
@@ -26,7 +27,7 @@ namespace MovieLibrary.Controllers
         [Route("/toplist")]
         public IEnumerable<string> Toplist(bool asc = false)
         {
-            var movies = FetchMovies(client);
+            var movies = FetchToplist(client);
 
             IEnumerable<Movie> orderedMovies = (asc) 
                 ? movies.OrderBy(m => m.rated) 
@@ -39,15 +40,35 @@ namespace MovieLibrary.Controllers
         [HttpGet]
         [Route("/movie")]
         public Movie GetMovieById(string id) {
-            var movies = FetchMovies(client);
+            var movies = FetchToplist(client);
             var movie = movies.FirstOrDefault(m => m.id == id);
 
             return movie;
         }
 
-        private static IEnumerable<Movie> FetchMovies(HttpClient client)
+        [HttpGet]
+        [Route("/movies")]
+        public IEnumerable<Movie> GetAll()
+        {
+            var toplistMovies = FetchToplist(client);
+            var detailedMovies = FetchDetailed(client);
+
+            var movies = toplistMovies.Concat(detailedMovies);
+            var uniqueMovies = movies.GroupBy(m => m.title).Select(m => m.FirstOrDefault()).ToList();
+
+            return uniqueMovies;
+        }
+
+        private static IEnumerable<Movie> FetchToplist(HttpClient client)
         {
             var result = client.GetAsync("https://ithstenta2020.s3.eu-north-1.amazonaws.com/topp100.json").Result;
+            var movies = JsonSerializer.Deserialize<List<Movie>>(new StreamReader(result.Content.ReadAsStream()).ReadToEnd());
+            return movies;
+        }
+
+        private static IEnumerable<Movie> FetchDetailed(HttpClient client)
+        {
+            var result = client.GetAsync("https://ithstenta2020.s3.eu-north-1.amazonaws.com/detailedMovies.json").Result;
             var movies = JsonSerializer.Deserialize<List<Movie>>(new StreamReader(result.Content.ReadAsStream()).ReadToEnd());
             return movies;
         }
