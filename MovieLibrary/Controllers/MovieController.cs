@@ -29,7 +29,7 @@ namespace MovieLibrary.Controllers
 
         [HttpGet]
         [Route("/toplist")]
-        public IEnumerable<string> Toplist(bool asc = false)
+        public ResponseObject<IEnumerable<string>> Toplist(bool asc = false)
         {
             var movies = FetchToplist(client);
 
@@ -40,7 +40,7 @@ namespace MovieLibrary.Controllers
             var titles = orderedMovies.Select(m => m.title).ToList();
 
             var response = okResponseFactory.GetResponse("Ok");
-            return titles;
+            return new ResponseObject<IEnumerable<string>>() { Response = response, Content = titles };
         }
 
         [HttpGet]

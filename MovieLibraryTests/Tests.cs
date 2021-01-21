@@ -12,7 +12,7 @@ namespace MovieLibraryTests
         [TestMethod]
         public void Toplist_ReturnsListOfStrings()
         {
-            var controller = new MovieController(new HttpClient());
+            var controller = new MovieController();
 
             var actual = controller.Toplist().ToList();
 
@@ -22,7 +22,7 @@ namespace MovieLibraryTests
         [TestMethod]
         public void Toplist_ReturnsCount100()
         {
-            var controller = new MovieController(new HttpClient());
+            var controller = new MovieController();
 
             var actual = controller.Toplist().ToList().Count;
 
@@ -32,11 +32,11 @@ namespace MovieLibraryTests
         [TestMethod]
         public void Toplist_ReturnsDescending()
         {
-            var controller = new MovieController(new HttpClient());
+            var controller = new MovieController();
 
             var actual = controller.Toplist();
-            var movies = controller.FetchMovies(new HttpClient()).ToList();
-            var ordered = movies.OrderByDescending(x => x.rated).ToList();
+            var movies = controller.Toplist().ToList();
+            var ordered = movies.Toplist(x => x.rated).ToList();
             var expected = ordered.Select(x => x.title).ToList();
 
             Assert.IsTrue(expected.SequenceEqual(actual));
@@ -48,7 +48,7 @@ namespace MovieLibraryTests
             var controller = new MovieController(new HttpClient());
 
             var actual = controller.Toplist(true);
-            var movies = controller.FetchMovies(new HttpClient()).ToList();
+            var movies = controller.Toplist(new HttpClient()).ToList();
             var ordered = movies.OrderBy(x => x.rated).ToList();
             var expected = ordered.Select(x => x.title).ToList();
 
