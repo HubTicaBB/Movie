@@ -1,12 +1,9 @@
-using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
-using System.Threading.Tasks;
 using MovieLibrary.Factory;
 using MovieLibrary.Responses;
 
@@ -33,13 +30,16 @@ namespace MovieLibrary.Controllers
         {
             var movies = FetchToplist(client);
 
+            var response = (movies is null)
+                ? errorResponseFactory.GetResponse("BadRequest")
+                : okResponseFactory.GetResponse("Ok");
+
             IEnumerable<Movie> orderedMovies = (asc) 
                 ? movies.OrderBy(m => m.rated) 
                 : movies.OrderByDescending(m => m.rated);
 
             var titles = orderedMovies.Select(m => m.title).ToList();
 
-            var response = okResponseFactory.GetResponse("Ok");
             return new ResponseObject<IEnumerable<string>>() { Response = response, Content = titles };
         }
 
@@ -63,10 +63,13 @@ namespace MovieLibrary.Controllers
             var toplistMovies = FetchToplist(client);
             var detailedMovies = FetchDetailed(client);
 
+            var response = (toplistMovies is null || detailedMovies is null)
+                ? errorResponseFactory.GetResponse("BadRequest")
+                : okResponseFactory.GetResponse("Ok");
+
             var movies = toplistMovies.Concat(detailedMovies);
             var uniqueMovies = movies.GroupBy(m => m.title).Select(m => m.FirstOrDefault()).ToList();
 
-            var response = okResponseFactory.GetResponse("Ok");
             return new ResponseObject<IEnumerable<Movie>>() { Response = response, Content = uniqueMovies };
         }
 
