@@ -1,12 +1,19 @@
-﻿using MovieLibrary.Controllers;
+﻿using MovieLibrary.Responses;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MovieLibrary.Factory
 {
-    public abstract class ResponseFactory<T>
+    public class ResponseFactory : AbstractResponseFactory<Response>
     {
-        public T GetResponse(string name) => CreateResponse(name);
-
-        protected abstract T CreateResponse(string name);
+        protected override Response CreateResponse(string name) => name switch
+        {
+            nameof(Ok) => new Ok(),
+            nameof(NotFound) => new NotFound(),
+            nameof(BadRequest) => new BadRequest(),
+            _ => null
+        };
     }
 }

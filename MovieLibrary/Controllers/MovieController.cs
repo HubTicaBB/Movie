@@ -27,8 +27,8 @@ namespace MovieLibrary.Controllers
             client = httpClient;
         }
 
-        ResponseFactory<Response> okResponseFactory = new OkResponseFactory();
-        ResponseFactory<Response> errorResponseFactory = new ErrorResponseFactory();
+        AbstractResponseFactory<Response> responseFactory = new ResponseFactory();
+        //ResponseFactory<Response> errorResponseFactory = new ErrorResponseFactory();
 
         [HttpGet]
         [Route("/toplist")]
@@ -37,8 +37,8 @@ namespace MovieLibrary.Controllers
             var movies = FetchToplist(client);
 
             var response = (movies is null)
-                ? errorResponseFactory.GetResponse("BadRequest")
-                : okResponseFactory.GetResponse("Ok");
+                ? responseFactory.GetResponse("BadRequest")
+                : responseFactory.GetResponse("Ok");
 
             IEnumerable<Movie> orderedMovies = (asc) 
                 ? movies.OrderBy(m => m.rated) 
@@ -56,8 +56,8 @@ namespace MovieLibrary.Controllers
             var movie = movies.FirstOrDefault(m => m.id == id);
 
             var response = (movie is null)
-                ? errorResponseFactory.GetResponse("NotFound")
-                : okResponseFactory.GetResponse("Ok");
+                ? responseFactory.GetResponse("NotFound")
+                : responseFactory.GetResponse("Ok");
 
             return new ResponseObject<Movie>() { Response = response, Content = movie };
         }
@@ -70,8 +70,8 @@ namespace MovieLibrary.Controllers
             var detailedMovies = FetchDetailed(client);
 
             var response = (toplistMovies is null || detailedMovies is null)
-                ? errorResponseFactory.GetResponse("BadRequest")
-                : okResponseFactory.GetResponse("Ok");
+                ? responseFactory.GetResponse("BadRequest")
+                : responseFactory.GetResponse("Ok");
 
             var movies = toplistMovies.Concat(detailedMovies);
             var uniqueMovies = movies.GroupBy(m => m.title).Select(m => m.FirstOrDefault()).ToList();
