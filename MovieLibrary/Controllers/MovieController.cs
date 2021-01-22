@@ -28,7 +28,10 @@ namespace MovieLibrary.Controllers
         private readonly AbstractResponseFactory<Response> _responseFactory;
         private readonly IHttpClientCaller _httpCaller;
 
-        public MovieController(HttpClient httpClient, AbstractResponseFactory<Response> responseFactory, IHttpClientCaller clientCaller)
+        public MovieController(
+            HttpClient httpClient, 
+            AbstractResponseFactory<Response> responseFactory, 
+            IHttpClientCaller clientCaller)
         {
             _httpClient = httpClient;
             _responseFactory = responseFactory;
