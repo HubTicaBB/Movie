@@ -1,8 +1,10 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using MovieLibrary.Controllers;
 using MovieLibrary.Factory;
 using MovieLibrary.Helpers;
 using MovieLibraryTests.Mock;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 
@@ -79,5 +81,20 @@ namespace MovieLibraryTests
             Assert.AreEqual(404, actual);
         }
 
+        [TestMethod]
+        public void GetAllUnique_WhenCalled_ReturnsNoDuplicates()
+        {
+            var mock = new Mock<IHttpClientCaller>();
+            mock.Setup(m => m.FetchMovies(httpClient, "endpoint")).Returns(() => 
+                new List<Movie> 
+                {
+                    new Movie() { id = "1", rated = "1", title = "1" },
+                    new Movie() { id = "2", rated = "2", title = "2" },
+                    new Movie() { id = "3", rated = "3", title = "2" }
+                });
+            var controller = new MovieController(httpClient, factory, mock.Object);
+
+            var actual = controller.GetAllUnique();
+        }
     }
 }
