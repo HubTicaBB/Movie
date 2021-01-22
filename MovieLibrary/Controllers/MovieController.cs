@@ -40,14 +40,14 @@ namespace MovieLibrary.Controllers
 
         [HttpGet]
         [Route("/toplist")]
-        public ResponseObject<IEnumerable<string>> Toplist(bool asc = false)
+        public ResponseObject<IEnumerable<string>> Toplist(bool ascending = false)
         {
             var movies = _httpCaller.FetchMovies(_httpClient, toplistEndpoint);
 
             var responseType = (movies is null) ? "BadRequest" : "Ok";
             var response = _responseFactory.GetResponse(responseType);
 
-            IEnumerable<Movie> orderedMovies = (asc) 
+            IEnumerable<Movie> orderedMovies = (ascending) 
                 ? movies.OrderBy(m => m.rated) 
                 : movies.OrderByDescending(m => m.rated);
 

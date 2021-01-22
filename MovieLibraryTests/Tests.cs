@@ -36,15 +36,27 @@ namespace MovieLibraryTests
         }
 
         [TestMethod]
-        public void Toplist_ArgIsFalse_ReturnsMoviesDescending()
+        public void Toplist_AscendingIsFalse_ReturnsMoviesDescending()
         {
+            var controller = new MovieController(httpClient, factory, mockClientCaller);
 
+            var result = controller.Toplist(false).Content;
+            var first = int.Parse(result.First());
+            var last = int.Parse(result.Last());
+
+            Assert.AreEqual(first, last + 1);
         }
 
         [TestMethod]
-        public void Toplist_ArgIsTrue_ReturnsMoviesAscending()
+        public void Toplist_AscendingIsIsTrue_ReturnsMoviesAscending()
         {
+            var controller = new MovieController(httpClient, factory, mockClientCaller);
 
+            var result = controller.Toplist(true).Content;
+            var first = int.Parse(result.First());
+            var last = int.Parse(result.Last());
+
+            Assert.AreEqual(first, last - 1);
         }
     }
 }
