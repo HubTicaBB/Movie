@@ -9,6 +9,22 @@ namespace MovieLibraryTests
     [TestClass]
     public class Tests
     {
-        
+        [TestMethod]
+        public void Toplist_NoArgument_ReturnsMoviesDescending()
+        {
+
+        }
+
+        [TestMethod]
+        public void Toplist_ArgIsFalse_ReturnsMoviesDescending()
+        {
+
+        }
+
+        [TestMethod]
+        public void Toplist_ArgIsTrue_ReturnsMoviesAscending()
+        {
+
+        }
     }
 }

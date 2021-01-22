@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using MovieLibrary.Factory;
+using MovieLibrary.Helpers;
 
 namespace MovieLibrary
 {
@@ -30,6 +31,7 @@ namespace MovieLibrary
             services.AddControllers();
             services.AddHttpClient();
             services.AddFactory<AbstractResponseFactory<Response>, ResponseFactory>();
+            services.AddSingleton<IHttpClientCaller, HttpClientCaller>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "MovieLibrary", Version = "v1"});
