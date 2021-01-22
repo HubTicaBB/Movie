@@ -70,7 +70,7 @@ namespace MovieLibrary.Controllers
 
         [HttpGet]
         [Route("/movies")]
-        public ResponseObject<IEnumerable<Movie>> GetAllUnique()
+        public ResponseObject<IEnumerable<Movie>> GetUniqueMovies()
         {
             var toplistMovies = _apiCaller.FetchMovies(_httpClient, toplistEndpoint);
             var detailedMovies = _apiCaller.FetchMovies(_httpClient, detailedEndpoint);

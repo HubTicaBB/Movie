@@ -1,10 +1,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using MovieLibrary.Controllers;
 using MovieLibrary.Factory;
 using MovieLibrary.Helpers;
 using MovieLibraryTests.Mock;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 
@@ -69,7 +67,7 @@ namespace MovieLibraryTests
 
             Assert.AreEqual(200, actual);
         }
-        
+
         [TestMethod]
         public void GetMovieById_NonExistingId_ReturnsNotFound()
         {
@@ -81,19 +79,13 @@ namespace MovieLibraryTests
         }
 
         [TestMethod]
-        public void GetAllUnique_WhenCalled_ReturnsNoDuplicates()
+        public void GetUniqueMovies_WhenCalled_ReturnsNoDuplicates()
         {
-            var mock = new Mock<IApiCaller>();
-            mock.Setup(m => m.FetchMovies(_httpClient, "endpoint")).Returns(() => 
-                new List<Movie> 
-                {
-                    new Movie() { id = "1", rated = "1", title = "1" },
-                    new Movie() { id = "2", rated = "2", title = "2" },
-                    new Movie() { id = "3", rated = "3", title = "2" }
-                });
-            var controller = new MovieController(_httpClient, _responseFactory, mock.Object);
+            var controller = new MovieController(_httpClient, _responseFactory, _mockApiCaller);
 
-            var actual = controller.GetAllUnique();
+            var uniqueMovies = controller.GetUniqueMovies().Content;
+
+            Assert.IsTrue(uniqueMovies.Distinct().Count() == uniqueMovies.Count());
         }
     }
 }
