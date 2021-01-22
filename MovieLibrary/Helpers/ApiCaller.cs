@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace MovieLibrary.Helpers
 {
-    public class HttpClientCaller : IHttpClientCaller
+    public class ApiCaller : IApiCaller
     {
         public IEnumerable<Movie> FetchMovies(HttpClient client, string endpoint)
         {

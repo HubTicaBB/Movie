@@ -1,15 +1,11 @@
 ﻿using MovieLibrary.Controllers;
 using MovieLibrary.Helpers;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MovieLibraryTests.Mock
 {
-    public class MockHttpClientCaller : IHttpClientCaller
+    public class MockApiCaller : IApiCaller
     {
         public IEnumerable<Movie> FetchMovies(HttpClient client, string endpoint)
         {

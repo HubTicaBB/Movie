@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MovieLibrary.Helpers
 {
-    public interface IHttpClientCaller
+    public interface IApiCaller
     {
         public IEnumerable<Movie> FetchMovies(HttpClient client, string endpoint);
     }

@@ -31,7 +31,7 @@ namespace MovieLibrary
             services.AddControllers();
             services.AddHttpClient();
             services.AddSingleton<AbstractResponseFactory<Response>, ResponseFactory>();
-            services.AddSingleton<IHttpClientCaller, HttpClientCaller>();
+            services.AddSingleton<IApiCaller, ApiCaller>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "MovieLibrary", Version = "v1"});

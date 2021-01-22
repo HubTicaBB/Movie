@@ -26,23 +26,23 @@ namespace MovieLibrary.Controllers
 
         private readonly HttpClient _httpClient;
         private readonly AbstractResponseFactory<Response> _responseFactory;
-        private readonly IHttpClientCaller _httpCaller;
+        private readonly IApiCaller _apiCaller;
 
         public MovieController(
             HttpClient httpClient, 
             AbstractResponseFactory<Response> responseFactory, 
-            IHttpClientCaller clientCaller)
+            IApiCaller apiCaller)
         {
             _httpClient = httpClient;
             _responseFactory = responseFactory;
-            _httpCaller = clientCaller;
+            _apiCaller = apiCaller;
         }
 
         [HttpGet]
         [Route("/toplist")]
         public ResponseObject<IEnumerable<string>> Toplist(bool ascending = false)
         {
-            var movies = _httpCaller.FetchMovies(_httpClient, toplistEndpoint);
+            var movies = _apiCaller.FetchMovies(_httpClient, toplistEndpoint);
 
             var responseType = (movies is null) ? "BadRequest" : "Ok";
             var response = _responseFactory.GetResponse(responseType);
@@ -59,7 +59,7 @@ namespace MovieLibrary.Controllers
         [HttpGet]
         [Route("/movie")]
         public ResponseObject<Movie> GetMovieById(string id) {
-            var movies = _httpCaller.FetchMovies(_httpClient, toplistEndpoint);
+            var movies = _apiCaller.FetchMovies(_httpClient, toplistEndpoint);
             var movie = movies.FirstOrDefault(m => m.id == id);
 
             var responseType = (movie is null) ? "NotFound" : "Ok";
@@ -72,8 +72,8 @@ namespace MovieLibrary.Controllers
         [Route("/movies")]
         public ResponseObject<IEnumerable<Movie>> GetAllUnique()
         {
-            var toplistMovies = _httpCaller.FetchMovies(_httpClient, toplistEndpoint);
-            var detailedMovies = _httpCaller.FetchMovies(_httpClient, detailedEndpoint);
+            var toplistMovies = _apiCaller.FetchMovies(_httpClient, toplistEndpoint);
+            var detailedMovies = _apiCaller.FetchMovies(_httpClient, detailedEndpoint);
 
             var responseType = (toplistMovies is null || detailedMovies is null) ? "BadRequest" : "Ok";
             var response = _responseFactory.GetResponse(responseType);
