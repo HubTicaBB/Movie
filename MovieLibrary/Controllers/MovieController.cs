@@ -21,14 +21,13 @@ namespace MovieLibrary.Controllers
     public class MovieController
     {
         private readonly HttpClient client;
+        private readonly AbstractResponseFactory<Response> factory;
 
-        public MovieController(HttpClient httpClient)
+        public MovieController(HttpClient httpClient, AbstractResponseFactory<Response> responseFactory)
         {
             client = httpClient;
+            factory = responseFactory;
         }
-
-        AbstractResponseFactory<Response> responseFactory = new ResponseFactory();
-        //ResponseFactory<Response> errorResponseFactory = new ErrorResponseFactory();
 
         [HttpGet]
         [Route("/toplist")]
@@ -37,7 +36,7 @@ namespace MovieLibrary.Controllers
             var movies = FetchToplist(client);
 
             var responseType = (movies is null) ? "BadRequest" : "Ok";
-            var response = responseFactory.GetResponse(responseType);
+            var response = factory.GetResponse(responseType);
 
             IEnumerable<Movie> orderedMovies = (asc) 
                 ? movies.OrderBy(m => m.rated) 
@@ -55,7 +54,7 @@ namespace MovieLibrary.Controllers
             var movie = movies.FirstOrDefault(m => m.id == id);
 
             var responseType = (movie is null) ? "NotFound" : "Ok";
-            var response = responseFactory.GetResponse(responseType);
+            var response = factory.GetResponse(responseType);
 
             return new ResponseObject<Movie>() { Response = response, Content = movie };
         }
@@ -68,7 +67,7 @@ namespace MovieLibrary.Controllers
             var detailedMovies = FetchDetailed(client);
 
             var responseType = (toplistMovies is null || detailedMovies is null) ? "BadRequest" : "Ok";
-            var response = responseFactory.GetResponse(responseType);
+            var response = factory.GetResponse(responseType);
 
             var movies = toplistMovies.Concat(detailedMovies);
             var uniqueMovies = movies.GroupBy(m => m.title).Select(m => m.FirstOrDefault()).ToList();
