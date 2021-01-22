@@ -8,13 +8,6 @@ using MovieLibrary.Helpers;
 
 namespace MovieLibrary.Controllers
 {
-    public class Movie
-    {
-        public string id { get; set; }
-        public string title { get; set; }
-        public string rated { get; set; }
-    }
-
     [ApiController]
     [Route("[controller]")]
     public class MovieController
