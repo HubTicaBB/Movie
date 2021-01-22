@@ -20,7 +20,13 @@ namespace MovieLibrary.Controllers
     [Route("[controller]")]
     public class MovieController
     {
-        static HttpClient client = new HttpClient();
+        private readonly HttpClient client;
+
+        public MovieController(HttpClient httpClient)
+        {
+            client = httpClient;
+        }
+
         ResponseFactory<Response> okResponseFactory = new OkResponseFactory();
         ResponseFactory<Response> errorResponseFactory = new ErrorResponseFactory();
 
