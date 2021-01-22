@@ -58,5 +58,26 @@ namespace MovieLibraryTests
 
             Assert.AreEqual(first, last - 1);
         }
+
+        [TestMethod]
+        public void GetMovieById_ExistingId_ReturnsOk()
+        {
+            var controller = new MovieController(httpClient, factory, mockClientCaller);
+
+            var actual = controller.GetMovieById("1").Response.StatusCode;
+
+            Assert.AreEqual(200, actual);
+        }
+        
+        [TestMethod]
+        public void GetMovieById_NonExistingId_ReturnsNotFound()
+        {
+            var controller = new MovieController(httpClient, factory, mockClientCaller);
+
+            var actual = controller.GetMovieById("0").Response.StatusCode;
+
+            Assert.AreEqual(404, actual);
+        }
+
     }
 }
