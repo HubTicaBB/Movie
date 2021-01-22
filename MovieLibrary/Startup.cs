@@ -30,7 +30,7 @@ namespace MovieLibrary
         {
             services.AddControllers();
             services.AddHttpClient();
-            services.AddFactory<AbstractResponseFactory<Response>, ResponseFactory>();
+            services.AddSingleton<AbstractResponseFactory<Response>, ResponseFactory>();
             services.AddSingleton<IHttpClientCaller, HttpClientCaller>();
             services.AddSwaggerGen(c =>
             {
