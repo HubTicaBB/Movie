@@ -1,7 +1,4 @@
-﻿using MovieLibrary.Controllers;
-using System.Collections.Generic;
-
-namespace MovieLibrary.Factory
+﻿namespace MovieLibrary.Factory
 {
     public abstract class AbstractResponseFactory<T>
     {

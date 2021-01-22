@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Text.Json;
 using MovieLibrary.Factory;
 using MovieLibrary.Responses;
 using MovieLibrary.Helpers;
