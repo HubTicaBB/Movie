@@ -20,6 +20,9 @@ namespace MovieLibrary.Controllers
     [Route("[controller]")]
     public class MovieController
     {
+        private static readonly string toplistEndpoint = "https://ithstenta2020.s3.eu-north-1.amazonaws.com/topp100.json";
+        private static readonly string detailedEndpoint = "https://ithstenta2020.s3.eu-north-1.amazonaws.com/detailedMovies.json";
+
         private readonly HttpClient client;
         private readonly AbstractResponseFactory<Response> factory;
 
@@ -33,7 +36,7 @@ namespace MovieLibrary.Controllers
         [Route("/toplist")]
         public ResponseObject<IEnumerable<string>> Toplist(bool asc = false)
         {
-            var movies = FetchToplist(client);
+            var movies = FetchMovies(client, toplistEndpoint);
 
             var responseType = (movies is null) ? "BadRequest" : "Ok";
             var response = factory.GetResponse(responseType);
@@ -50,7 +53,7 @@ namespace MovieLibrary.Controllers
         [HttpGet]
         [Route("/movie")]
         public ResponseObject<Movie> GetMovieById(string id) {
-            var movies = FetchToplist(client);
+            var movies = FetchMovies(client, toplistEndpoint);
             var movie = movies.FirstOrDefault(m => m.id == id);
 
             var responseType = (movie is null) ? "NotFound" : "Ok";
@@ -63,8 +66,8 @@ namespace MovieLibrary.Controllers
         [Route("/movies")]
         public ResponseObject<IEnumerable<Movie>> GetAll()
         {
-            var toplistMovies = FetchToplist(client);
-            var detailedMovies = FetchDetailed(client);
+            var toplistMovies = FetchMovies(client, toplistEndpoint);
+            var detailedMovies = FetchMovies(client, detailedEndpoint);
 
             var responseType = (toplistMovies is null || detailedMovies is null) ? "BadRequest" : "Ok";
             var response = factory.GetResponse(responseType);
@@ -75,16 +78,9 @@ namespace MovieLibrary.Controllers
             return new ResponseObject<IEnumerable<Movie>>() { Response = response, Content = uniqueMovies };
         }
 
-        private static IEnumerable<Movie> FetchToplist(HttpClient client)
+        private static IEnumerable<Movie> FetchMovies(HttpClient client, string endpoint)
         {
-            var result = client.GetAsync("https://ithstenta2020.s3.eu-north-1.amazonaws.com/topp100.json").Result;
-            var movies = JsonSerializer.Deserialize<List<Movie>>(new StreamReader(result.Content.ReadAsStream()).ReadToEnd());
-            return movies;
-        }
-
-        private static IEnumerable<Movie> FetchDetailed(HttpClient client)
-        {
-            var result = client.GetAsync("https://ithstenta2020.s3.eu-north-1.amazonaws.com/detailedMovies.json").Result;
+            var result = client.GetAsync(endpoint).Result;
             var movies = JsonSerializer.Deserialize<List<Movie>>(new StreamReader(result.Content.ReadAsStream()).ReadToEnd());
             return movies;
         }
