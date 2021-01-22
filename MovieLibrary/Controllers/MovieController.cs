@@ -36,9 +36,8 @@ namespace MovieLibrary.Controllers
         {
             var movies = FetchToplist(client);
 
-            var response = (movies is null)
-                ? responseFactory.GetResponse("BadRequest")
-                : responseFactory.GetResponse("Ok");
+            var responseType = (movies is null) ? "BadRequest" : "Ok";
+            var response = responseFactory.GetResponse(responseType);
 
             IEnumerable<Movie> orderedMovies = (asc) 
                 ? movies.OrderBy(m => m.rated) 
@@ -55,9 +54,8 @@ namespace MovieLibrary.Controllers
             var movies = FetchToplist(client);
             var movie = movies.FirstOrDefault(m => m.id == id);
 
-            var response = (movie is null)
-                ? responseFactory.GetResponse("NotFound")
-                : responseFactory.GetResponse("Ok");
+            var responseType = (movie is null) ? "NotFound" : "Ok";
+            var response = responseFactory.GetResponse(responseType);
 
             return new ResponseObject<Movie>() { Response = response, Content = movie };
         }
@@ -69,9 +67,8 @@ namespace MovieLibrary.Controllers
             var toplistMovies = FetchToplist(client);
             var detailedMovies = FetchDetailed(client);
 
-            var response = (toplistMovies is null || detailedMovies is null)
-                ? responseFactory.GetResponse("BadRequest")
-                : responseFactory.GetResponse("Ok");
+            var responseType = (toplistMovies is null || detailedMovies is null) ? "BadRequest" : "Ok";
+            var response = responseFactory.GetResponse(responseType);
 
             var movies = toplistMovies.Concat(detailedMovies);
             var uniqueMovies = movies.GroupBy(m => m.title).Select(m => m.FirstOrDefault()).ToList();
